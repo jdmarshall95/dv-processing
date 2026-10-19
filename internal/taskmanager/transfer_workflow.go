@@ -12,6 +12,7 @@ import (
 	"github.com/dv-net/dv-processing/internal/fsm/fsmdoge"
 	"github.com/dv-net/dv-processing/internal/fsm/fsmevm"
 	"github.com/dv-net/dv-processing/internal/fsm/fsmltc"
+	"github.com/dv-net/dv-processing/internal/fsm/fsmsolana"
 	"github.com/dv-net/dv-processing/internal/fsm/fsmtron"
 	"github.com/dv-net/dv-processing/internal/models"
 	"github.com/dv-net/dv-processing/internal/services/baseservices"
@@ -67,6 +68,8 @@ func (s *TransferWorkflowWorker) Work(ctx context.Context, job *river.Job[Transf
 		wconstants.BlockchainTypeLitecoin:    s.handleLtcFSM,
 		wconstants.BlockchainTypeBitcoinCash: s.handleBchFSM,
 		wconstants.BlockchainTypeDogecoin:    s.handleDogeFSM,
+
+		wconstants.BlockchainTypeSolana: s.handleSolanaFSM,
 	}
 
 	handler, ok := handlers[transfer.Blockchain]
@@ -168,6 +171,23 @@ func (s *TransferWorkflowWorker) handleEvmFSM(ctx context.Context, transfer *mod
 	fsm, err := fsmevm.NewFSM(s.logger, evmConfig, s.config.IsEnabledSeedEncryption(), s.store, s.bs, evmInstance, transfer)
 	if err != nil {
 		return fmt.Errorf("create %s fsm: %w", transfer.Blockchain.String(), err)
+	}
+
+	return fsm.Run(ctx)
+}
+
+func (s *TransferWorkflowWorker) handleSolanaFSM(ctx context.Context, transfer *models.Transfer) error {
+	if !s.config.Blockchain.Solana.Enabled {
+		return fmt.Errorf("solana blockchain is disabled in config: %w", river.JobSnooze(time.Minute))
+	}
+
+	if s.bs.Solana() == nil {
+		return fmt.Errorf("solana service is not initialized: %w", river.JobSnooze(time.Minute))
+	}
+
+	fsm, err := fsmsolana.NewFSM(s.logger, s.config, s.store, s.bs, transfer)
+	if err != nil {
+		return fmt.Errorf("create solana fsm: %w", err)
 	}
 
 	return fsm.Run(ctx)

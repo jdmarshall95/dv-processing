@@ -12,13 +12,13 @@
 
 ## 💡 Overview
 
-**DV Processing** is the blockchain engine behind the DV.net ecosystem — a high-performance, multi-chain service that creates wallets, executes transfers, and tracks on-chain activity across 11 blockchains. Written in Go, it exposes a ConnectRPC/gRPC API and is designed to run on your own infrastructure.
+**DV Processing** is the blockchain engine behind the DV.net ecosystem — a high-performance, multi-chain service that creates wallets, executes transfers, and tracks on-chain activity across 12 blockchains. Written in Go, it exposes a ConnectRPC/gRPC API and is designed to run on your own infrastructure.
 
 > 🔒 **Non-custodial** — private keys and mnemonics never leave your server
 >
 > ⚡ **High-performance** — ConnectRPC/gRPC, PostgreSQL, River queue
 >
-> 🌐 **Multi-chain** — 11 blockchains: EVM, UTXO and Tron
+> 🌐 **Multi-chain** — 12 blockchains: EVM, UTXO, Tron and Solana
 >
 > 🧱 **Modular** — FSM workflows, clean service layer, event-driven architecture
 
@@ -32,6 +32,7 @@
 - ✅ Tron resource delegation (energy & bandwidth) and activation contracts
 - ✅ EVM gas price limits and fee control per network
 - ✅ Bitcoin-family UTXO management with configurable fee-per-byte
+- ✅ Solana native SOL and SPL token transfers (ATA creation, memo/reference)
 - ✅ Block scanning and explorer proxy integration
 
 **🔧 Technical features**
@@ -51,18 +52,18 @@ cmd/                  CLI entrypoints (server, webhooks)
 internal/
   handler/            ConnectRPC request handlers
   services/           Business logic (clients, owners, wallets, transfers, webhooks)
-  fsm/                Finite state machines per blockchain (tron, evm, btc, ltc, bch, doge)
+  fsm/                Finite state machines per blockchain (tron, evm, btc, ltc, bch, doge, solana)
   workflow/           Workflow engine with stages, steps, and retries
   store/              PostgreSQL repositories (sqlc-generated)
   dispatcher/         Event dispatching
   taskmanager/        Background jobs (River)
   eproxy/             Explorer proxy client
   rmanager/           Resource manager (Tron delegation)
-  watcher/            Blockchain watcher integration
+  watcher/            Blockchain watcher integration (incl. Solana RPC polling)
   tscanner/           Transfer scanner
   escanner/           Explorer scanner
 pkg/
-  walletsdk/          Blockchain wallet SDKs (btc, ltc, bch, doge, evm, tron)
+  walletsdk/          Blockchain wallet SDKs (btc, ltc, bch, doge, evm, tron, solana)
   postgres/           Database connection management
   encryption/         Encryption utilities
   retry/              Retry policies

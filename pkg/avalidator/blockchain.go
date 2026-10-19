@@ -10,4 +10,7 @@ const (
 	BlockchainTypeBinanceSmartChain string = "bsc"
 	BlockchainTypePolygon           string = "polygon"
 	BlockchainTypeArbitrum          string = "arbitrum"
+	BlockchainTypeOptimism          string = "optimism"
+	BlockchainTypeLinea             string = "linea"
+	BlockchainTypeSolana            string = "solana"
 )

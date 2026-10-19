@@ -27,6 +27,9 @@ type Blockchain struct {
 	Litecoin    LitecoinBlockchain
 	BitcoinCash BitcoinCashBlockchain `yaml:"bitcoin_cash"`
 	Dogecoin    DogecoinBlockchain    `yaml:"dogecoin"`
+
+	// Solana
+	Solana SolanaBlockchain `yaml:"solana"`
 }
 
 // Available blockchains
@@ -80,6 +83,10 @@ func (b Blockchain) Available() []wconstants.BlockchainType {
 
 	if b.Dogecoin.Enabled {
 		available = append(available, wconstants.BlockchainTypeDogecoin)
+	}
+
+	if b.Solana.Enabled {
+		available = append(available, wconstants.BlockchainTypeSolana)
 	}
 
 	return available

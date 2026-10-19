@@ -30,6 +30,9 @@ const (
 	BlockchainTypeLitecoin    BlockchainType = "litecoin"
 	BlockchainTypeBitcoinCash BlockchainType = "bitcoincash"
 	BlockchainTypeDogecoin    BlockchainType = "dogecoin"
+
+	// Solana
+	BlockchainTypeSolana BlockchainType = "solana"
 )
 
 // AllBlockchainsStrings returns all blockchain types as a slice of strings
@@ -45,6 +48,7 @@ var AllBlockchains = Blockchains{
 	BlockchainTypeLitecoin,
 	BlockchainTypeBitcoinCash,
 	BlockchainTypeDogecoin,
+	BlockchainTypeSolana,
 }
 
 // Validate checks if the blockchain type is valid
@@ -61,7 +65,8 @@ func (b BlockchainType) Valid() bool {
 		BlockchainTypeBitcoin,
 		BlockchainTypeLitecoin,
 		BlockchainTypeBitcoinCash,
-		BlockchainTypeDogecoin:
+		BlockchainTypeDogecoin,
+		BlockchainTypeSolana:
 		return true
 	}
 	return false
@@ -94,6 +99,8 @@ func (b BlockchainType) GetAssetIdentifier() string {
 		return "bch"
 	case BlockchainTypeDogecoin:
 		return "doge"
+	case BlockchainTypeSolana:
+		return "sol"
 	default:
 		return ""
 	}
@@ -137,5 +144,5 @@ func (b BlockchainType) IsBitcoinLike() bool {
 }
 
 func (b BlockchainType) IsSystemTransactionsSupported() bool {
-	return b.IsEVM() || b == BlockchainTypeTron
+	return b.IsEVM() || b == BlockchainTypeTron || b == BlockchainTypeSolana
 }

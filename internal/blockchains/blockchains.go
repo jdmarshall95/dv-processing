@@ -13,6 +13,7 @@ import (
 	"github.com/dv-net/dv-processing/pkg/walletsdk/doge"
 	"github.com/dv-net/dv-processing/pkg/walletsdk/evm"
 	"github.com/dv-net/dv-processing/pkg/walletsdk/ltc"
+	"github.com/dv-net/dv-processing/pkg/walletsdk/solana"
 	"github.com/dv-net/dv-processing/pkg/walletsdk/tron"
 	"github.com/dv-net/dv-processing/pkg/walletsdk/wconstants"
 	"github.com/ethereum/go-ethereum/rpc"
@@ -35,6 +36,9 @@ type Blockchains struct {
 	Litecoin    *ltc.LTC
 	BitcoinCash *bch.BCH
 	Dogecoin    *doge.Doge
+
+	// Solana
+	Solana *solana.Solana
 }
 
 func New(ctx context.Context, conf config.Blockchain, sdk *walletsdk.SDK) (*Blockchains, error) {
@@ -205,6 +209,18 @@ func New(ctx context.Context, conf config.Blockchain, sdk *walletsdk.SDK) (*Bloc
 		bc.Linea, err = evm.NewEVM(ctx, c)
 		if err != nil {
 			return nil, fmt.Errorf("failed to init linea service: %w", err)
+		}
+	}
+
+	// init solana
+	if conf.Solana.Enabled {
+		headers := map[string]string{
+			constants.ProcessingIDParamName.String():      identity.ID,
+			constants.ProcessingVersionParamName.String(): identity.Version,
+		}
+		bc.Solana, err = solana.NewSolana(conf.Solana.ConvertToSDKConfig(headers))
+		if err != nil {
+			return nil, fmt.Errorf("failed to init solana service: %w", err)
 		}
 	}
 

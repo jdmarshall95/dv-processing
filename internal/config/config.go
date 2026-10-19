@@ -142,4 +142,11 @@ func (c *Config) SetDefaults() {
 	c.Blockchain.Dogecoin.Node.Login = "rpc"
 	c.Blockchain.Dogecoin.Node.Secret = "qh1lFWjT4UPlY0kN"
 	c.Blockchain.Dogecoin.Node.UseTLS = true
+
+	c.Blockchain.Solana.Enabled = false
+	c.Blockchain.Solana.Node.Address = "https://api.mainnet-beta.solana.com"
+	c.Blockchain.Solana.Node.WSSURL = "wss://api.mainnet-beta.solana.com"
+	c.Blockchain.Solana.Commitment = "confirmed"
+	c.Blockchain.Solana.PollInterval = 5 * time.Second
+	c.Blockchain.Solana.MaxRetries = 3
 }

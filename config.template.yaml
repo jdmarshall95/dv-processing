@@ -137,6 +137,14 @@ blockchain:
       login: rpc
       secret: qh1lFWjT4UPlY0kN
       use_tls: true
+  solana:
+    enabled: false
+    node:
+      address: https://api.mainnet-beta.solana.com
+      wss_url: wss://api.mainnet-beta.solana.com
+    commitment: confirmed
+    poll_interval: 5s
+    max_retries: 3
 resource_manager:
   enabled: true
   connect:

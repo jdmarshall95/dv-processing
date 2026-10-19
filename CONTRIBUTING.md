@@ -416,6 +416,7 @@ The project supports multiple blockchains:
 - **EVM-based**: Ethereum, BSC, Polygon, Arbitrum, Optimism, Linea
 - **UTXO-based**: Bitcoin, Litecoin, Bitcoin Cash, Dogecoin
 - **Tron**: Native Tron blockchain
+- **Solana**: Native SOL and SPL tokens
 
 When adding new blockchain support:
 1. Add configuration in `internal/config/`

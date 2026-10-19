@@ -8,6 +8,7 @@ import (
 	"github.com/dv-net/dv-processing/pkg/walletsdk/doge"
 	"github.com/dv-net/dv-processing/pkg/walletsdk/evm"
 	"github.com/dv-net/dv-processing/pkg/walletsdk/ltc"
+	"github.com/dv-net/dv-processing/pkg/walletsdk/solana"
 	"github.com/dv-net/dv-processing/pkg/walletsdk/tron"
 	"github.com/dv-net/dv-processing/pkg/walletsdk/wconstants"
 	bchchaincfg "github.com/gcash/bchd/chaincfg"
@@ -17,12 +18,13 @@ import (
 const testNet = "testnet"
 
 type SDK struct {
-	BTC  *btc.WalletSDK
-	LTC  *ltc.WalletSDK
-	BCH  *bch.WalletSDK
-	Doge *doge.WalletSDK
-	Tron *tron.WalletSDK
-	EVM  *evm.WalletSDK
+	BTC    *btc.WalletSDK
+	LTC    *ltc.WalletSDK
+	BCH    *bch.WalletSDK
+	Doge   *doge.WalletSDK
+	Tron   *tron.WalletSDK
+	EVM    *evm.WalletSDK
+	Solana *solana.WalletSDK
 }
 
 func New(conf Config) *SDK {
@@ -47,12 +49,13 @@ func New(conf Config) *SDK {
 	}
 
 	return &SDK{
-		BTC:  btc.NewWalletSDK(btcChainParams),
-		LTC:  ltc.NewWalletSDK(ltcChainParams),
-		BCH:  bch.NewWalletSDK(bchChainParams),
-		Doge: doge.NewWalletSDK(dogeChainParams),
-		Tron: tron.NewWalletSDK(),
-		EVM:  evm.NewWalletSDK(),
+		BTC:    btc.NewWalletSDK(btcChainParams),
+		LTC:    ltc.NewWalletSDK(ltcChainParams),
+		BCH:    bch.NewWalletSDK(bchChainParams),
+		Doge:   doge.NewWalletSDK(dogeChainParams),
+		Tron:   tron.NewWalletSDK(),
+		EVM:    evm.NewWalletSDK(),
+		Solana: solana.NewWalletSDK(),
 	}
 }
 
@@ -95,6 +98,9 @@ func (s *SDK) AddressWallet(blockchain wconstants.BlockchainType, addressType st
 
 	case wconstants.BlockchainTypeTron:
 		return tron.AddressWallet(mnemonic, passphrase, sequence)
+
+	case wconstants.BlockchainTypeSolana:
+		return solana.AddressWallet(mnemonic, passphrase, sequence)
 
 	default:
 		return "", ErrBlockchainUndefined
@@ -148,6 +154,9 @@ func (s *SDK) AddressSecret(blockchain wconstants.BlockchainType, address string
 
 	case wconstants.BlockchainTypeTron:
 		return tron.AddressSecret(address, mnemonic, passphrase, sequence)
+
+	case wconstants.BlockchainTypeSolana:
+		return solana.AddressSecret(address, mnemonic, passphrase, sequence)
 
 	default:
 		return "", ErrBlockchainUndefined
@@ -227,6 +236,9 @@ func (s *SDK) AddressPublic(blockchain wconstants.BlockchainType, address string
 
 	case wconstants.BlockchainTypeTron:
 		return tron.AddressPublic(address, mnemonic, passphrase, sequence)
+
+	case wconstants.BlockchainTypeSolana:
+		return solana.AddressPublic(address, mnemonic, passphrase, sequence)
 
 	default:
 		return "", ErrBlockchainUndefined
@@ -337,6 +349,9 @@ func (s *SDK) ValidateAddress(blockchain wconstants.BlockchainType, address stri
 
 	case wconstants.BlockchainTypeTron:
 		return tron.ValidateAddress(address)
+
+	case wconstants.BlockchainTypeSolana:
+		return solana.ValidateAddress(address)
 
 	default:
 		return false

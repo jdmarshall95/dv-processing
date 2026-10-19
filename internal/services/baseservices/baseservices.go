@@ -27,6 +27,7 @@ import (
 	"github.com/dv-net/dv-processing/pkg/walletsdk/doge"
 	"github.com/dv-net/dv-processing/pkg/walletsdk/evm"
 	"github.com/dv-net/dv-processing/pkg/walletsdk/ltc"
+	"github.com/dv-net/dv-processing/pkg/walletsdk/solana"
 	"github.com/dv-net/dv-processing/pkg/walletsdk/tron"
 )
 
@@ -48,6 +49,7 @@ type IBaseServices interface { //nolint:interfacebloat
 	BinanceSmartChain() *evm.EVM
 	BCH() *bch.BCH
 	Doge() *doge.Doge
+	Solana() *solana.Solana
 	MAdmin() *madmin.Service
 	RManager() *rmanager.Service
 	Updater() *updater.Service
@@ -133,3 +135,4 @@ func (s *service) MAdmin() *madmin.Service                         { return s.ma
 func (s *service) RManager() *rmanager.Service                     { return s.rmanager }
 func (s *service) Updater() *updater.Service                       { return s.upd }
 func (s *service) Doge() *doge.Doge                                { return s.blockchains.Dogecoin }
+func (s *service) Solana() *solana.Solana                          { return s.blockchains.Solana }

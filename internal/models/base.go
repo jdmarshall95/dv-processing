@@ -59,6 +59,9 @@ func ConvertBlockchainType(blockchain commonv1.Blockchain) (wconstants.Blockchai
 	case commonv1.Blockchain_BLOCKCHAIN_DOGECOIN:
 		res = wconstants.BlockchainTypeDogecoin
 
+	case commonv1.Blockchain_BLOCKCHAIN_SOLANA:
+		res = wconstants.BlockchainTypeSolana
+
 	default:
 		return res, fmt.Errorf("invalid blockchain type: %s", blockchain.String())
 	}
@@ -100,6 +103,9 @@ func ConvertBlockchainTypeToPb(blockchain wconstants.BlockchainType) commonv1.Bl
 		return commonv1.Blockchain_BLOCKCHAIN_BITCOINCASH
 	case wconstants.BlockchainTypeDogecoin:
 		return commonv1.Blockchain_BLOCKCHAIN_DOGECOIN
+
+	case wconstants.BlockchainTypeSolana:
+		return commonv1.Blockchain_BLOCKCHAIN_SOLANA
 
 	default:
 		return commonv1.Blockchain_BLOCKCHAIN_UNSPECIFIED

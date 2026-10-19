@@ -10,6 +10,7 @@ import (
 	btcchaincfg "github.com/btcsuite/btcd/chaincfg"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/fbsobreira/gotron-sdk/pkg/address"
+	solanago "github.com/gagliardetto/solana-go"
 	bchchaincfg "github.com/gcash/bchd/chaincfg"
 	"github.com/gcash/bchutil"
 	ltcchaincfg "github.com/ltcsuite/ltcd/chaincfg"
@@ -84,6 +85,12 @@ func ValidateTronAddress(addr string) bool {
 	return err == nil
 }
 
+// Solana validates a Solana address.
+func ValidateSolanaAddress(addr string) bool {
+	_, err := solanago.PublicKeyFromBase58(addr)
+	return err == nil
+}
+
 // ValidateAddressByBlockchain validates an address by blockchain type.
 func ValidateAddressByBlockchain(addr, blockchain string) bool {
 	switch blockchain {
@@ -96,12 +103,16 @@ func ValidateAddressByBlockchain(addr, blockchain string) bool {
 	case BlockchainTypeEthereum,
 		BlockchainTypeBinanceSmartChain,
 		BlockchainTypePolygon,
-		BlockchainTypeArbitrum:
+		BlockchainTypeArbitrum,
+		BlockchainTypeOptimism,
+		BlockchainTypeLinea:
 		return ValidateEVMAddress(addr)
 	case BlockchainTypeTron:
 		return ValidateTronAddress(addr)
 	case BlockchainTypeBitcoinCash:
 		return ValidateBitcoinCashAddress(addr)
+	case BlockchainTypeSolana:
+		return ValidateSolanaAddress(addr)
 	default:
 		return false
 	}

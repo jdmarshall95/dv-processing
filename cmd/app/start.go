@@ -32,6 +32,7 @@ import (
 	"github.com/dv-net/dv-processing/internal/taskmanager"
 	"github.com/dv-net/dv-processing/internal/tscanner"
 	"github.com/dv-net/dv-processing/internal/watcher"
+	solanawatcher "github.com/dv-net/dv-processing/internal/watcher/solana"
 	"github.com/dv-net/dv-processing/pkg/postgres"
 	"github.com/dv-net/dv-processing/pkg/walletsdk"
 	"github.com/dv-net/mx/launcher"
@@ -242,6 +243,17 @@ func startCMD() *cli.Command { //nolint:funlen
 			if bc.Tron != nil {
 				ln.ServicesRunner().Register(
 					service.New(service.WithService(bc.Tron)),
+				)
+			}
+
+			if bc.Solana != nil {
+				ln.ServicesRunner().Register(
+					service.New(service.WithService(bc.Solana)),
+				)
+				ln.ServicesRunner().Register(
+					service.New(service.WithService(
+						solanawatcher.New(l, conf.Blockchain.Solana, bc.Solana, baseSvc, st),
+					)),
 				)
 			}
 

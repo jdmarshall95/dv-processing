@@ -37,6 +37,9 @@ func BlockchainTypeToPB(bt wconstants.BlockchainType) commonv1.Blockchain {
 	case wconstants.BlockchainTypeDogecoin:
 		return commonv1.Blockchain_BLOCKCHAIN_DOGECOIN
 
+	case wconstants.BlockchainTypeSolana:
+		return commonv1.Blockchain_BLOCKCHAIN_SOLANA
+
 	default:
 		return commonv1.Blockchain_BLOCKCHAIN_UNSPECIFIED
 	}
@@ -63,6 +66,9 @@ var rollbackSafeDepth = map[wconstants.BlockchainType]int64{
 	wconstants.BlockchainTypeLitecoin:    6,
 	wconstants.BlockchainTypeBitcoinCash: 6,
 	wconstants.BlockchainTypeDogecoin:    6,
+
+	// Solana (~32 slots to finalized; confirmed ≈ 1)
+	wconstants.BlockchainTypeSolana: 32,
 }
 
 // RollbackFallbackBlock returns the safe block to revert to when no recent incident is found.
@@ -98,6 +104,9 @@ var minConfirmations = map[wconstants.BlockchainType]uint64{
 	wconstants.BlockchainTypeLitecoin:    1,
 	wconstants.BlockchainTypeBitcoinCash: 1,
 	wconstants.BlockchainTypeDogecoin:    1,
+
+	// Solana: treat confirmed commitment as sufficient (1)
+	wconstants.BlockchainTypeSolana: 1,
 }
 
 var releaseBlockTime = map[wconstants.BlockchainType]time.Duration{
@@ -108,6 +117,7 @@ var releaseBlockTime = map[wconstants.BlockchainType]time.Duration{
 	wconstants.BlockchainTypeArbitrum:          250 * time.Millisecond,
 	wconstants.BlockchainTypeOptimism:          2 * time.Second,
 	wconstants.BlockchainTypeLinea:             2*time.Second + time.Millisecond*500,
+	wconstants.BlockchainTypeSolana:            400 * time.Millisecond,
 }
 
 func GetMinConfirmations(blockchain wconstants.BlockchainType) uint64 {

@@ -120,13 +120,16 @@ func (r *CreateTransferRequest) validate(conf *config.Config) error {
 		wconstants.BlockchainTypeOptimism,
 		wconstants.BlockchainTypeLinea:
 		return r.validateEVM()
+	case wconstants.BlockchainTypeSolana:
+		return r.validateSolana()
 	default:
 		return nil
 	}
 }
 
-// normalize trims user input and lowercases the source tx hash,
-// so the same deposit always hits the refund unique index
+// normalize trims user input and normalizes the source tx hash,
+// so the same deposit always hits the refund unique index.
+// Hex hashes (EVM/UTXO/Tron) are lowercased; Solana signatures stay case-sensitive (base58).
 func (r *CreateTransferRequest) normalize() {
 	if r.Purpose == "" {
 		r.Purpose = constants.TransferPurposeDefault
@@ -135,7 +138,10 @@ func (r *CreateTransferRequest) normalize() {
 	r.TOTP = strings.TrimSpace(r.TOTP)
 
 	if r.SourceTxHash != nil {
-		hash := strings.ToLower(strings.TrimSpace(*r.SourceTxHash))
+		hash := strings.TrimSpace(*r.SourceTxHash)
+		if r.Blockchain != wconstants.BlockchainTypeSolana {
+			hash = strings.ToLower(hash)
+		}
 		r.SourceTxHash = &hash
 	}
 }
@@ -193,9 +199,10 @@ func (r *CreateTransferRequest) validatePurpose() error {
 }
 
 var (
-	totpRegexp    = regexp.MustCompile(`^\d{6}$`)
-	txHashRegexp  = regexp.MustCompile(`^[0-9a-f]{64}$`)
-	evmHashRegexp = regexp.MustCompile(`^0x[0-9a-f]{64}$`)
+	totpRegexp      = regexp.MustCompile(`^\d{6}$`)
+	txHashRegexp    = regexp.MustCompile(`^[0-9a-f]{64}$`)
+	evmHashRegexp   = regexp.MustCompile(`^0x[0-9a-f]{64}$`)
+	solanaSigRegexp = regexp.MustCompile(`^[1-9A-HJ-NP-Za-km-z]{64,88}$`)
 )
 
 // isValidTxHash checks the normalized (lowercase) tx hash format for the blockchain
@@ -208,6 +215,8 @@ func isValidTxHash(blockchain wconstants.BlockchainType, hash string) bool {
 		wconstants.BlockchainTypeOptimism,
 		wconstants.BlockchainTypeLinea:
 		return evmHashRegexp.MatchString(hash)
+	case wconstants.BlockchainTypeSolana:
+		return solanaSigRegexp.MatchString(hash)
 	default:
 		return txHashRegexp.MatchString(hash)
 	}
@@ -264,6 +273,14 @@ func (r *CreateTransferRequest) validateTron(conf *config.Config) error {
 func (r *CreateTransferRequest) validateEVM() error {
 	if r.Kind != nil {
 		return fmt.Errorf("kind is not supported for the %s blockchain", r.Blockchain.String())
+	}
+
+	return nil
+}
+
+func (r *CreateTransferRequest) validateSolana() error {
+	if r.Kind != nil {
+		return fmt.Errorf("kind is not supported for the solana blockchain")
 	}
 
 	return nil

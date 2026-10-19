@@ -231,6 +231,10 @@ func (s *Service) checkTransfer(ctx context.Context, req *CreateTransferRequest)
 		if err := s.processEVM(ctx, req); err != nil {
 			return nil, fmt.Errorf("process evm: %w", err)
 		}
+	case wconstants.BlockchainTypeSolana:
+		if err := s.processSolana(ctx, req); err != nil {
+			return nil, fmt.Errorf("process solana: %w", err)
+		}
 	}
 
 	return owner, nil

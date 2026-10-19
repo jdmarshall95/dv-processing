@@ -36,6 +36,9 @@ func ConvertBlockchain(bc wconstants.BlockchainType) commonv2.Blockchain {
 	case wconstants.BlockchainTypeDogecoin:
 		return commonv2.Blockchain_BLOCKCHAIN_DOGECOIN
 
+	case wconstants.BlockchainTypeSolana:
+		return commonv2.Blockchain_BLOCKCHAIN_SOLANA
+
 	default:
 		return commonv2.Blockchain_BLOCKCHAIN_UNSPECIFIED
 	}
