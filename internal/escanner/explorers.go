@@ -15,6 +15,13 @@ func (s *EScanner) initExplorers(ctx context.Context) error {
 	errCh := make(chan error, 1)
 
 	for _, chain := range s.config.Available() {
+		// Solana deposits are handled by internal/watcher/solana (RPC polling).
+		// Explorer-proxy does not support Solana block scanning yet.
+		if chain == wconstants.BlockchainTypeSolana {
+			s.logger.Infow("skip explorer-scanner for solana: use solana RPC watcher", "blockchain", chain)
+			continue
+		}
+
 		go func() {
 			if err := s.initExplorer(ctx, chain); err != nil {
 				errCh <- fmt.Errorf("init explorer for %s: %w", chain.String(), err)
